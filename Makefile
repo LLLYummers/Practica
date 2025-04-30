@@ -22,7 +22,7 @@ else # Для Винды
 
 # Статистически линкую две библиотеки, которых не хватало когда я компилил до этого
 # Это вроде как специфика Винды
-	LDFLAGS += -static-libgcc -static-libstdc++ -static -static-SDL2
+	LDFLAGS += -static-libgcc -static-libstdc++ -static
 endif
 
 all: $(TARGET)
