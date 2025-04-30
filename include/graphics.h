@@ -3,26 +3,31 @@
 
 #include "SDL.h"
 #include <functional>
-#include <cmath>  // Добавлен для sin()
+#include <cmath>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 class Graphics {
 public:
     static void handleGraphics();
-    
-private:
+
     Graphics(int width, int height);
     ~Graphics();
-    
+
     void run();
-    void renderMenu();  // Объявлен метод
+    void plotFunction(const std::function<double(double)>& func, double xMin, double xMax);
+    
+private:
     void drawAxes();
-    void plotFunction(const std::function<double(double)>& func, double xMin, double xMax);  // Полная сигнатура
     
     SDL_Window* window;
     SDL_Renderer* renderer;
     int width;
     int height;
-    bool showMenu;
+    std::function<double(double)> currentFunc;
+    double currentXMin;
+    double currentXMax;
 };
 
-#endif // GRAPHICS_H
+#endif

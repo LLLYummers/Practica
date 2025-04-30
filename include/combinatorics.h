@@ -11,8 +11,8 @@ public:
     static long long combinationsWithoutRepetition(int n, int k);
     static long long combinationsWithRepetition(int n, int k);
     static long long permutations(int n);
-    static void showMenu();
-    static void runCalculator();
+
+    static void handleCombinatorics();
 };
 
-#endif // COMBINATORICS_H
+#endif

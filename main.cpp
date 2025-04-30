@@ -1,3 +1,6 @@
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include <iostream>
 #include "statistics.h"
 #include "matrix.h"
@@ -5,9 +8,21 @@
 #include "polynomial.h"
 #include "combinatorics.h"
 #include "graphics.h"
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "SDL.h"
 
+// Функция для включения поддержки ANSI в Винде
+void enableANSIConsole() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) return;
+
+    DWORD dwMode = 0;
+    if (!GetConsoleMode(hOut, &dwMode)) return;
+
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
+
+// Ниже функция и прочее для реализации красивого лого :3
 const std::vector<std::string> rainbowColors = {
     "\033[38;5;196m", // Red
     "\033[38;5;208m", // Orange
@@ -19,17 +34,6 @@ const std::vector<std::string> rainbowColors = {
 };
 
 const std::string resetColor = "\033[0m";
-
-void enableANSIConsole() {
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hOut == INVALID_HANDLE_VALUE) return;
-
-    DWORD dwMode = 0;
-    if (!GetConsoleMode(hOut, &dwMode)) return;
-
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
-}
 
 void printPracticaLogo() {
     const std::vector<std::string> logoLines = {
@@ -50,52 +54,61 @@ void printPracticaLogo() {
     }
 }
 
-void displayMainMenu() {
-    enableANSIConsole(); 
-    printPracticaLogo();
-    std::cout << "1. Калькулятор Формул Комбинаторики\n";
-    std::cout << "2. Калькулятор многочленов\n";
-    std::cout << "3. Матричный калькулятор\n";
-    std::cout << "4. Тер.вер и мат. статистика\n";
-    std::cout << "5. Калькулятор обыкновенных дробей\n";
-    std::cout << "6. Работа с функциями\n";
-    std::cout << "0. Выход\n";
-    std::cout << "Выберите раздел: ";
-}
-
-int main() {
-
+int WINAPI WinMain(HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine,
+    int nCmdShow) {
+    
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
-    
+    enableANSIConsole();
+
+    // Перенаправление стандартного ввода/вывода для работы с Виндузятной консолью 
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        freopen("CONIN$", "r", stdin);
+        freopen("CONOUT$", "w", stdout);
+        freopen("CONOUT$", "w", stderr);
+    }
+
     int choice;
     do {
-        displayMainMenu();
+        
+        printPracticaLogo();
+        std::cout << "1. Калькулятор Формул Комбинаторики\n";
+        std::cout << "2. Калькулятор многочленов\n";
+        std::cout << "3. Матричный калькулятор\n";
+        std::cout << "4. Тер.вер и мат. статистика\n";
+        std::cout << "5. Калькулятор обыкновенных дробей\n";
+        std::cout << "6. Работа с функциями\n";
+        std::cout << "0. Выход\n";
+        std::cout << "Выберите раздел: ";
+
         std::cin >> choice;
 
         switch (choice) {
-            // Калькулятор Формул Комбинаторики 
             case 1:
-                Combinatorics::runCalculator();
+            // Калькулятор Формул Комбинаторики 
+                Combinatorics::handleCombinatorics();
                 break;
-            // Калькулятор многочленов
             case 2:
+            // Калькулятор многочленов
                 handlePolynomialMenu();
                 break;
-            // Матричный калькулятор 
             case 3:
+            // Матричный калькулятор 
                 MenuMatrix();
                 break;
-            // Тер.вер и мат. статистика
+            
             case 4:
+            // Тер.вер и мат. статистика
                 Fractions::handleFractionsMenu();
                 break;
-            // Калькулятор обыкновенных дробей
             case 5:
+            // Калькулятор обыкновенных дробей
                 Statistics::handleStatisticsMenu();
                 break;
-            // Работа с функциями
             case 6:
+            // Работа с функциями
                 Graphics::handleGraphics();
                 break;
             case 0:
