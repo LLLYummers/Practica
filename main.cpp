@@ -1,5 +1,7 @@
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#endif
 
 #include <iostream>
 #include "statistics.h"
@@ -11,6 +13,7 @@
 #include "SDL.h"
 
 // Функция для включения поддержки ANSI в Винде
+#ifdef _WIN32
 void enableANSIConsole() {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut == INVALID_HANDLE_VALUE) return;
@@ -21,6 +24,11 @@ void enableANSIConsole() {
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hOut, dwMode);
 }
+#else
+void enableANSIConsole() {
+    // Do nothing on non-Windows platforms
+}
+#endif
 
 // Ниже функция и прочее для реализации красивого лого :3
 const std::vector<std::string> rainbowColors = {
@@ -54,11 +62,16 @@ void printPracticaLogo() {
     }
 }
 
+#ifdef _WIN32
 int WINAPI WinMain(HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
     LPSTR lpCmdLine,
     int nCmdShow) {
+#else
+int main(int argc, char* argv[]) {
+#endif
     
+#ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     enableANSIConsole();
@@ -69,6 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         freopen("CONOUT$", "w", stdout);
         freopen("CONOUT$", "w", stderr);
     }
+#endif
 
     int choice;
     do {
